@@ -1,0 +1,18 @@
+from flask import Flask
+from flask_cors import CORS
+
+
+def create_app():
+    app = Flask(__name__)
+    app.config['SECRET_KEY'] = 'makethesecretkeywhateveryouwant'
+    app.config.from_object(__name__)
+
+    CORS(app, resources={r"/*":{'origins': "http://localhost:8080", "allow_headers": "Access-Control-Allow-Origin"}})
+
+    from .endpoints import endpoints
+    from .security import security
+
+    app.register_blueprint(endpoints, url_prefix='/')
+    app.register_blueprint(security, url_prefix='/auth')
+
+    return app
