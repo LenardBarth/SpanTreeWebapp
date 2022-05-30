@@ -13,6 +13,6 @@ def create_app():
     from .security import security
 
     app.register_blueprint(endpoints, url_prefix='/')
-    app.register_blueprint(security, url_prefix='/auth')
+    app.register_blueprint(security, url_prefix='/auth/api/v1')
 
     return app
