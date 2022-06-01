@@ -2,7 +2,7 @@
 
   <navBarVue />
   <router-view @infoPopup="handleInfo($event)" />
-  <userInfoPopupVue />
+  <userInfoPopupVue v-if="this.infoMsg.msg !== ''" v-show="showInfo" :info="this.infoMsg" />
 
 </template>
 
