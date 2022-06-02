@@ -2,7 +2,9 @@
 
   <navBarVue />
   <router-view @infoPopup="handleInfo($event)" />
-  <userInfoPopupVue v-if="this.infoMsg.msg !== ''" v-show="showInfo" :info="this.infoMsg" />
+  <div class="infostack" v-if="this.infoStack !== []">
+    <userInfoPopupVue v-for="infoMsg in infoStack" :key="infoMsg.status + infoMsg.msg" :info="infoMsg" />
+  </div>
 
 </template>
 
@@ -17,19 +19,12 @@ export default {
   },
   data() {
     return {
-      infoMsg: {status: "", msg: ""},
-      showInfo: false
+      infoStack: [],
     }
   },
   methods: {
     handleInfo(_info) {
-      console.log(_info)
-      this.infoMsg = _info
-      this.showInfo = true
-      setTimeout(() => {
-        this.showInfo = false
-        this.infoMsg.msg = ''
-      }, 2500)
+      this.infoStack.push(_info)
     }
   }
 }
@@ -37,6 +32,7 @@ export default {
 
 <style>
 #app {
+  height: 100vh;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
