@@ -1,22 +1,37 @@
 <template>
-    <div>
-        <h1>VUE Hompeage</h1>
+<div class="content-wrapper">
+    <!-- List Layout and Funcionalty from https://codepen.io/SimoTuognia/pen/ZjYJQo -->
+    <div class="component-wrapper">
+        <addVrtxListVue />
     </div>
-    <button class="btn btn-primary" @click="$emit('infoPopup', {status: 'primary', msg: 'This is a test PRIMARY message'})">Test Alert Primary</button>
-    <button class="btn btn-success" @click="$emit('infoPopup', {status: 'success', msg: 'This is a test SUCCESS message'})">Test Alert Success</button>
-    <button class="btn btn-warning" @click="$emit('infoPopup', {status: 'warning', msg: 'This is a test WARNIING message'})">Test Alert Warning</button>
-    <button class="btn btn-danger" @click="$emit('infoPopup', {status: 'danger', msg: 'This is a test DANGER message'})">Test Alert Danger</button>
+    <div class="component-wrapper">
+        <addEdgeListVue />
+    </div>
+</div>
 </template>
 
 <script>
+import addVrtxListVue from '@/components/addVrtxList.vue'
+import addEdgeListVue from '@/components/addEdgeList.vue'
+
 export default {
     name: "HomePage",
+    components: {
+        addVrtxListVue,
+        addEdgeListVue
+    },
     emits: ['infoPopup']
 }
 </script>
 
 <style scoped>
-button {
+.content-wrapper {
+    width: 100vw;
+    display: flex;
+    justify-content: space-between;
+}
+.component-wrapper {
+    width: 49%;
     margin: 5px;
 }
 </style>

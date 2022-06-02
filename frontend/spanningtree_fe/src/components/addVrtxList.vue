@@ -1,6 +1,20 @@
 <template>
     <form @submit.prevent="">
-        <h2 >All Vertices</h2>
+        <h2 >Vertices</h2>
+        <div class="addnewvrtx-wrapper">
+            <h4>Add new Vertex to your Spanning Tree</h4>
+            <div class="row justify-content-around">
+                <div class="col col-4 form-group ">
+                    <label class="w-100" for="vrtxID">ID</label>
+                    <input type="number" v-model="vrtxID" autofocus>
+                </div>
+                <div class="col col-4 form-group">
+                    <label class="w-100" for="vrtxName">Name</label>
+                    <input type="text" v-model="vrtxName">
+                </div>
+            </div>
+            <button type="button" @click="addVrtx" class="btn btn-primary" ><i class="fa fa-plus"></i>Add</button>
+        </div>
         <table id="vrtx-list-table" class="table table-hover">
             <thead class="table-dark">
                 <tr>
@@ -27,20 +41,7 @@
                 </tr>
             </tbody>
         </table>
-        <div class="addnewvrtx-wrapper">
-            <h4>Add new Vertex to your Spanning Tree</h4>
-            <div class="row justify-content-around">
-                <div class="col-4 form-group ">
-                    <label for="vrtxID">ID</label>
-                    <input type="number" v-model="vrtxID" autofocus>
-                </div>
-                <div class="col-4 form-group">
-                    <label for="vrtxName">Name</label>
-                    <input type="text" v-model="vrtxName">
-                </div>
-                <button type="button" @click="addVrtx" class="col-2 btn btn-primary" ><i class="fa fa-plus"></i>Add</button>
-            </div>
-        </div>
+        
     </form>
 </template>
 
@@ -64,9 +65,9 @@ export default {
             var inputVrtxID = this.vrtxID
             var inputVrtxName = this.vrtxName.trim()
             this.vrtxList.push({ 
-            vrtxID: inputVrtxID,
-            vrtxName: inputVrtxName,
-            inEditMode: false
+                vrtxID: inputVrtxID,
+                vrtxName: inputVrtxName,
+                inEditMode: false
             });
             this.clearAll()
         },
@@ -94,15 +95,25 @@ export default {
   vertical-align: middle;
 }
 
-button {
-  margin-left: 12px;
+.addnewvrtx-wrapper button {
+  width: 80%;
+  margin-top: 10px;
+}
+
+table button {
+  margin: 0 6px;
 }
 
 .addnewvrtx-wrapper {
-    width: 75%;
+    height: 150px;
+    width: 95%;
     background-color: rgb(223, 223, 223);
-    margin: 5px;
-    padding: 10px;
+    margin: 10px;
+    padding: 5px;
     border-radius: 5px;
+}
+
+input {
+    width: 70%;
 }
 </style>
