@@ -2,8 +2,6 @@
 venv/
 
 __pycache__/
-.gitignore
-database.db
 
 # From VUE project
 .DS_Store
