@@ -1,9 +1,9 @@
 from flask import Flask
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
+from os import path
 
-
-# -- Database Connection --
+# -- Defining new Database --
 db = SQLAlchemy()
 DB_NAME = "database.db"
 
@@ -29,4 +29,17 @@ def create_app():
     app.register_blueprint(endpoints, url_prefix='/')
     app.register_blueprint(security, url_prefix='/auth')
 
+
+    # Create Database if not already exists
+    from . import db_models
+    create_database(app)
+
     return app
+
+'''
+
+'''
+def create_database(app):
+    if not path.exists('backend/' + DB_NAME):
+        db.create_all(app=app)
+        print("Created Database!")
