@@ -7,6 +7,9 @@ from os import path
 db = SQLAlchemy()
 DB_NAME = "database.db"
 
+# -- Path to be enabled for CORS --
+FRONTEND_DOMAIN = "http://localhost:8080"
+
 
 # -- Flask Application Configuragtions --
 def create_app():
@@ -18,7 +21,7 @@ def create_app():
 
 
     # Enable Cross-Origin Ressource Sharing for local frontend server only
-    CORS(app, resources={r"/*":{'origins': "http://localhost:8080", "allow_headers": "Access-Control-Allow-Origin"}})
+    CORS(app, resources={r"/*": {"origins": f"{FRONTEND_DOMAIN}/*"}})
 
 
     #  Referencing all routes defined in seperate files
