@@ -37,6 +37,9 @@ export default {
         if (response.data.status === 'success') {
           localStorage.setItem('user_id', toString(response.data.user_id))
           localStorage.setItem('logged_in', "True")
+          localStorage.setItem('vrtxList', "")
+          localStorage.setItem('edgeList', "")
+          localStorage.setItem('result', "")
           this.$router.push({ name: 'Home'})
         }
         this.$emit('infoPopup', {status: response.data.status, msg: response.data.message})
