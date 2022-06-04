@@ -5,6 +5,19 @@ from .db_models import User
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
+"""Module description
+   * this script sets up routes for all APIs concerning User authentication
+   * flask, flask_login are installed in venv
+   * werkzeug does not have to be nstalled seperately
+   * other imports are from within directory
+
+   author: 7056674
+   date: 04.06.2022
+   version: 0.0.1
+   license: free
+"""
+
+
 security = Blueprint('security', __name__)
 
 @security.route('/login', methods=['POST'])
@@ -75,8 +88,8 @@ def logout():
     try:
         current_user.authenticated = False
         logout_user()
-        response_object['message'] = "Logged out successfully"
+        response_object['message'] = "Logged out"
     except:
-        response_object = {"status": "error"}
+        response_object = {"status": "danger"}
         response_object['message'] = "Could not log out"
     return response_object

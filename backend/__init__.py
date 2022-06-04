@@ -3,6 +3,17 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from os import path
 
+"""Module description
+   * this script configures all the dependencies for the application
+   * flask, flask_cors, and flask_sqlalchemy are installed in venv
+
+   author: 7056674
+   date: 04.06.2022
+   version: 0.0.1
+   license: free
+"""
+
+
 # -- Defining new Database --
 db = SQLAlchemy()
 DB_NAME = "database.db"

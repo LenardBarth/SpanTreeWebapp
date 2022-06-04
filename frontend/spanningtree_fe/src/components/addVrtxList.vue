@@ -96,6 +96,10 @@ export default {
 
 
 <style scoped>
+h2 {
+    font-weight: bold;
+}
+
 #vrtx-list-table{
   table-layout: fixed;
   vertical-align: middle;

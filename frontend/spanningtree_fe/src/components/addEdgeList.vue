@@ -115,6 +115,10 @@ export default {
 
 
 <style scoped>
+h2 {
+    font-weight: bold;
+}
+
 #edge-list-table{
   table-layout: fixed;
   vertical-align: middle;

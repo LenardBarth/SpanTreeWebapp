@@ -4,6 +4,19 @@ from . import db
 from .db_models import SpanningTree, User
 from .evaluateSpanningTree import evaluateSpanningTree
 
+
+"""Module description
+   * this script sets up routes for all APIs concerning the Spanning Tree workflow
+   * flask, flask_login are installed in venv
+   * other imports are from within directory
+
+   author: 7056674
+   date: 04.06.2022
+   version: 0.0.1
+   license: free
+"""
+
+
 endpoints = Blueprint('endpoints', __name__)
 
 
@@ -17,15 +30,11 @@ def computeTree():
         vrtcs = post_data.get('vrtcs')
         edges = post_data.get('edges')
 
-        print("vrtcs", vrtcs)
-        print("edges", edges)
-
-        evaluateSpanningTree(input_vertices=vrtcs, input_edges=edges)
         try:
             tree_result = evaluateSpanningTree(input_vertices=vrtcs, input_edges=edges)
-            response_object['message'] = tree_result
+            response_object['result'] = tree_result
         except:
-            response_object = {"status": "error"}
+            response_object = {"status": "danger"}
             response_object['message'] = "Could not compute ideal Spanning Tree"
 
 
@@ -54,46 +63,31 @@ def getSpanningTree(tree_id):
             print(tree)
     return response_object
 
+@endpoints.route('/save', methods=["POST"])
+@login_required
+def save_spanTree():
+    response_object = {"status": "success"}
+    if request.method == 'POST':
+        post_data = request.get_json()
 
+        treeID = post_data.get('tree_id')
+        vrtcsStr = post_data.get('vrtcs')
+        edgesStr = post_data.get('edges')
+        resultStr = post_data.get('result')
 
-# Routes for Vertices
-# @endpoints.route('/getVertices', methods=["GET"])
-# def getVertices():
-#     response_object = {"status": "success"}
-#     return response_object
+        try:
+            tree = SpanningTree.query.filter_by(id=treeID).first()
+            if tree:
+                tree.vrtcs=vrtcsStr
+                tree.edges=edgesStr
+                tree.result=resultStr
+            else:
+                newTree = SpanningTree(user_id=current_user, vrtcs=vrtcsStr, edges=edgesStr, result=resultStr)
+                db.session.add(newTree)
+            db.session.commit()
+            response_object['message'] = "Saved!"
+        except:
+            response_object = {"status": "warning"}
+            response_object['message'] = "Could not save Spanning Tree"
 
-# @endpoints.route('/newVertex', methods=["POST"])
-# def newVertex():
-#     response_object = {"status": "success"}
-#     return response_object
-
-# @endpoints.route('/updateVertex', methods=["PUT"])
-# def updateVertex():
-#     response_object = {"status": "success"}
-#     return response_object
-
-# @endpoints.route('/deleteVertex', methods=["REMOVE"])
-# def deleteVertex():
-#     response_object = {"status": "success"}
-#     return response_object
-
-# Routes for Edges
-# @endpoints.route('/getEdges', methods=["GET"])
-# def getEdges():
-#     response_object = {"status": "success"}
-#     return response_object
-
-# @endpoints.route('/newEdge', methods=["POST"])
-# def newEdge():
-#     response_object = {"status": "success"}
-#     return response_object
-
-# @endpoints.route('/updateEdge', methods=["PUT"])
-# def updateEdge():
-#     response_object = {"status": "success"}
-#     return response_object
-
-# @endpoints.route('/deleteEdge', methods=["REMOVE"])
-# def deleteEdge():
-#     response_object = {"status": "success"}
-#     return response_object
+    return response_object
