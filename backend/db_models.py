@@ -19,7 +19,6 @@ class User(db.Model, UserMixin):
     first_name = db.Column(db.String(128))
     last_name = db.Column(db.String(128))
     authenticated = db.Column(db.Boolean, default=False)
-    trees = db.relationship('SpanningTree')
 
     # Needed to confirm to login_user() function provided by flask_login
     def is_active(self):
