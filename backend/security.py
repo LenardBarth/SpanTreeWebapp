@@ -9,7 +9,6 @@ security = Blueprint('security', __name__)
 
 @security.route('/login', methods=['POST'])
 def login():
-    print("method:", request.method)
     if request.method == 'POST':
         response_object = {"status": "success"}
         post_data = request.get_json()
@@ -19,9 +18,14 @@ def login():
         # check if user wit given email exists and correct password was entered
         user = User.query.filter_by(email=rEmail).first()
         if user and check_password_hash(user.password, rPassword):
-            user.authenticated = True
-            login_user(user, remember=True)
-            response_object['message'] = "Logged in successfully!"
+            if user.authenticated == False:
+                user.authenticated = True
+                login_user(user, remember=True)
+                response_object['message'] = "Logged in successfully!"
+                response_object['user_id'] = user.id
+            else:
+                response_object["status"] = "warning"
+                response_object['message'] = "Already logged in."
         else:
             response_object["status"] = "warning"
             response_object['message'] = "Login data incorrect."
@@ -38,11 +42,6 @@ def createUser():
         rFirstName = post_data.get('first_name')
         rLastName = post_data.get('last_name')
         rPassword = post_data.get('password')
-
-        response_object['email'] = rEmail
-        response_object['first_name'] = rFirstName
-        response_object['last_name'] = rLastName
-        response_object['password'] = rPassword
 
         # check if user already exists
         user = User.query.filter_by(email=rEmail).first()
