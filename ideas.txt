@@ -2,16 +2,23 @@
 ~~~~~~~~~~~~
 
 * saving data
-	+ store edges & vrtcs in localStorage
-	+ to compute send data stored locally
+	X store edges & vrtcs in localStorage
+	X to compute send data stored locally
 	+ to save be logged in first
 		- send lists from localstorage
 		- process lists in BE
 * redesign DB to store SpanningTree properly
-	+ just update edges, vrtcs in FE then send entire list (that way must not be logged in)
+	X just update edges, vrtcs in FE then send entire list (that way must not be logged in)
+	X store stringified JSON of edges & vrtcs
+* compute tree in backend
+	X define route
+	X integrate spanningTree ipynb
+	X return string result
 
 
-> example of localStorage structure - same as BE
+
+
+-> example of localStorage structure - same as BE
 List of all SpanTrees
 {
 	1: {
@@ -36,7 +43,7 @@ List of all SpanTrees
 	}
 }
 
-> example of what BE returns
+-> example of what BE returns on getUserTree
 response.data = {
 	1: {
 		"vrtcs": [
