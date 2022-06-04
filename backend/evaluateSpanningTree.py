@@ -132,8 +132,6 @@ def formatEdges(edges):
     return formattedEdges
 
 def isValidInput(vrtcs, edges):
-    # example valid vrtcs: {"A": 2, "B": 18, "C", 1}
-    # example valid edges: {"A-B": 2, "B-C": 3, "C-A", 2}
     if (vrtcs!=[] and edges!=[]):
         # start value is infinty - will be used to compare against
         minVrtxID = float('inf')
