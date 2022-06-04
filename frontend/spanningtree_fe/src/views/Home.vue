@@ -1,6 +1,5 @@
 <template>
 <div class="content-wrapper">
-    <!-- List Layout and Funcionalty from https://codepen.io/SimoTuognia/pen/ZjYJQo -->
     <div class="component-wrapper">
         <addVrtxListVue />
     </div>
