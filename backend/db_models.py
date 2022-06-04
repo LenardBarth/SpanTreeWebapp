@@ -6,8 +6,9 @@ from flask_login import UserMixin
 
 class SpanningTree(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    vertices = []   # List of Objects(Dicts) like {"A": 1}
-    edges = []      # List of Objects(Dicts) like {"A-B": 3}
+    name = db.Column(db.String(128))
+    vertices = db.Column(db.Text)   # List of Objects(Dicts) like {"A": 1}
+    edges =  db.Column(db.Text)     # List of Objects(Dicts) like {"A-B": 3}
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     last_modified = db.Column(db.DateTime(timezone=True), onupdate=func.now())
 
