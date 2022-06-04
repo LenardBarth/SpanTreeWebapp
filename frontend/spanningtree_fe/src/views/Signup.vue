@@ -58,8 +58,10 @@ export default {
         if (response && response.status === 200) {
             console.log("response:", response);
             console.log("response success data: ", response.data);
-            this.$router.push({ name: 'Login'})
-            this.$emit('infoPopup', {status: response.data.status, msg: response.data.message})
+        if (response.data.status === 'success') {
+          this.$router.push({ name: 'Home'})
+        }
+        this.$emit('infoPopup', {status: response.data.status, msg: response.data.message})
         } else {
             this.$emit('infoPopup', {status: "danger", msg: "Something went wrong..."})
         }
