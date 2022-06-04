@@ -1,4 +1,5 @@
 <template>
+    <!-- List Layout and Funcionalty from https://codepen.io/SimoTuognia/pen/ZjYJQo -->
     <form @submit.prevent="">
         <h2 >Vertices</h2>
         <div class="addnewvrtx-wrapper">
