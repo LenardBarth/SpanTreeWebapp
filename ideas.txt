@@ -1,0 +1,61 @@
+### TODO ###
+~~~~~~~~~~~~
+
+* saving data
+	+ store edges & vrtcs in localStorage
+	+ to compute send data stored locally
+	+ to save be logged in first
+		- send lists from localstorage
+		- process lists in BE
+* redesign DB to store SpanningTree properly
+	+ just update edges, vrtcs in FE then send entire list (that way must not be logged in)
+
+
+> example of localStorage structure - same as BE
+List of all SpanTrees
+{
+	1: {
+		"vrtcs": [
+			{"ID": 1, "name": "A"},
+			{"ID": 2, "name": "B"},
+			{"ID": 5, "name": "C"}
+		],
+		"edges": [
+			{"From": "A", "To": "B", "Weight": 11},
+			{"From": "B", "To": "C", "Weight": 5},
+			{"From": "C", "To": "A", "Weight": 13}
+		]
+	},
+	2: {
+		"vrtcs": [
+			...
+		],
+		"edges": [
+			...
+		]
+	}
+}
+
+> example of what BE returns
+response.data = {
+	1: {
+		"vrtcs": [
+			{"ID": 1, "name": "A"},
+			{"ID": 2, "name": "B"},
+			{"ID": 5, "name": "C"}
+		],
+		"edges": [
+			{"From": "A", "To": "B", "Weight": 11},
+			{"From": "B", "To": "C", "Weight": 5},
+			{"From": "C", "To": "A", "Weight": 13}
+		]
+	},
+	2: {
+		"vrtcs": [
+			...
+		],
+		"edges": [
+			...
+		]
+	}
+}
