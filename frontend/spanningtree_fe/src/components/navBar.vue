@@ -17,7 +17,7 @@
 </template>
 
 <script>
-// import axios from "axios";
+import axios from "axios";
 
 export default {
   name: "navBar",
@@ -26,20 +26,15 @@ export default {
   },
   methods: {
     async logout() {
-    //   const response = await axios.post("auth/api/v1/logout", {}, {
-    //     headers: {
-    //       "Authorization": "Bearer " + localStorage.token
-    //     }
-    //   })
-    //   if (response.status === 200) {
-    //     localStorage.clear()
-    //     sessionStorage.clear()
-    //     this.$router.push('/login')
-    //   } else {
-    //     this.$emit('infoPopup', ["err", "Konnte nicht ausgeloggt werden"])
-    //     console.log("Logout not completed")
-    //   }
-    console.log("logout");
+      const response = await axios.get("auth/logout")
+      if (response && response.status === 200) {
+        localStorage.clear()
+        sessionStorage.clear()
+        this.$router.push({ name: 'Login'})
+        this.$emit('infoPopup', {status: response.data.status, msg: response.data.message})
+      } else {
+        this.$emit('infoPopup', {status: response.data.status, msg: response.data.message})
+      }
     }
   }
 }
