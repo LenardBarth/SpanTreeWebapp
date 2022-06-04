@@ -40,6 +40,7 @@ export default {
           localStorage.setItem('vrtxList', "")
           localStorage.setItem('edgeList', "")
           localStorage.setItem('result', "")
+          localStorage.setItem('treeID', "")
           this.$router.push({ name: 'Home'})
         }
         this.$emit('infoPopup', {status: response.data.status, msg: response.data.message})
