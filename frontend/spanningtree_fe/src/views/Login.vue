@@ -34,8 +34,9 @@ export default {
       })
       if (response && response.status === 200) {
         console.log("response:", response);
-        console.log("response success data: ", response.data);
         if (response.data.status === 'success') {
+          localStorage.setItem('user_id', toString(response.data.user_id))
+          localStorage.setItem('logged_in', "True")
           this.$router.push({ name: 'Home'})
         }
         this.$emit('infoPopup', {status: response.data.status, msg: response.data.message})

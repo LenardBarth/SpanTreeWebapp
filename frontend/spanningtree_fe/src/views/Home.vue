@@ -1,10 +1,10 @@
 <template>
 <div class="content-wrapper">
     <div class="component-wrapper">
-        <addVrtxListVue />
+        <addVrtxListVue @infoPopup="$emit('infoPopup', $event)" @changeVrtxList="passListChanged()"/>
     </div>
     <div class="component-wrapper">
-        <addEdgeListVue />
+        <addEdgeListVue @infoPopup="$emit('infoPopup', $event)" :newVrtxList="changedList"/>
     </div>
 </div>
 </template>
@@ -15,11 +15,21 @@ import addEdgeListVue from '@/components/addEdgeList.vue'
 
 export default {
     name: "HomePage",
+    emits: ['infoPopup'],
     components: {
         addVrtxListVue,
         addEdgeListVue
     },
-    emits: ['infoPopup']
+    data() {
+        return {
+            changedList: []
+        }
+    },
+    methods: {
+        passListChanged() {
+            this.changedList = JSON.parse(localStorage.getItem('vrtxList'))
+        }
+    }
 }
 </script>
 
