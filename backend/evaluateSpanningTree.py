@@ -1,6 +1,9 @@
 import random
-import re
 
+'''
+    ## Vertex Class ##
+    Represents Node in Spanning Tree
+'''
 class Vertex:
     name = "none"       # string filled from input
     id = 0              # int filled from input
@@ -75,6 +78,8 @@ class Vertex:
         elif sender.root.id == self.root.id and sender.weightToRoot + weightBetween < self.weightToRoot:
             self.nextHop = sender
             self.weightToRoot = sender.weightToRoot + weightBetween
+''' ## End of Vertex Class ## '''
+
 
 def createVertices(vrtcsTplList):
     vrtcs = {}
@@ -83,7 +88,7 @@ def createVertices(vrtcsTplList):
         vrtcs[newVrtx.name] = newVrtx
     return vrtcs
 
-def generateNghbrs(vrtcsDict):
+def generateNghbrs(input_edges, vrtcsDict):
     for vrtx in vrtcsDict:
         vrtcsDict[vrtx].findNeighbors(input_edges, vrtcsDict)
 
@@ -104,79 +109,31 @@ def generateOutput(vrtcsDict):
         hopList.append(tpl)
     return hopList
 
-def printOutputToFile(tplList):
-    try:
-        file = open("output.txt", "w")
-        for tpl in tplList:
-            str = tpl[0] + " -> " + tpl[1] + "\n"
-            file.write(str)
-        file.close()
-        print("Successfully printed result to 'output.txt' in current directory")
-    except:
-        print("[!] - Error: Could not write result to file")
+def outputToString(tplList):
+    outputString = ""
+    for tpl in tplList:
+        outputString = outputString + tpl[0] + " -> " + tpl[1] + "\n"
+    return outputString
 
-def handleInput(line):
-    # Regular expression to check if line in input is definition of edge with pattern: ' <name1> - <name2> = <weight>' or ' <name1> - <name2> : <weight>'
-    # (weight is number, number of spaces anywhere not specific)
-    edgeRgx = re.compile(r"""\s*(?P<edgeVrtx1>[a-zA-Z][a-zA-Z0-9_]*)\s*-\s*(?P<edgeVrtx2>[a-zA-Z][a-zA-Z0-9_]*)\s*[:=]\s*(?P<edgeWeight>[0-9]+);*""")
-    # Regular expression to check if line in input is definition of vertex with pattern: ' <name> = <ID>' or ' <name> : <ID>'
-    # (ID is number, number of spaces anywhere not specific)
-    vrtxRgx = re.compile(r"""\s*(?P<vrtxName>[a-zA-Z][a-zA-Z0-9_]*)\s*[:=]\s*(?P<vrtxID>[0-9]+);*""")
-    # check same line for edge pattern
-    edgeMatch = edgeRgx.search(line)
-    # match is not None if there is a matching string
-    if edgeMatch:
-        # filter out edges connecting to self or ones that have weight of 0
-        if (not (edgeMatch.group('edgeVrtx1') == edgeMatch.group('edgeVrtx2'))) and (not (int(edgeMatch.group('edgeWeight')) == 0)):
-            # transform input to data for spanning tree
-            tpl = (edgeMatch.group('edgeVrtx1')+"-"+edgeMatch.group('edgeVrtx2'), int(edgeMatch.group('edgeWeight')))
-            # make sure a definition for this edge has not been appended yet
-            if not any (tpl[0] == edge[0] for edge in input_edges):
-                # make data available to be processed
-                input_edges.append(tpl)
-    # if line does not match vertex pattern 
-    else:
-        # check line for vertex pattern
-        vrtxMatch = vrtxRgx.search(line)
-        # match is not None if there is a matching string
-        if vrtxMatch:
-            tpl = (vrtxMatch.group('vrtxName'), int(vrtxMatch.group('vrtxID')))
-            # make sure a definition for this vertex has not been appended yet
-            if not any (tpl[0] == vrtx[0] for vrtx in input_vertices):
-                input_vertices.append(tpl)
+def formatVrtcs(vrtcs):
+    formattedVrtcs = []
+    for vrtx in vrtcs:
+        tpl = (vrtx["vrtxName"], vrtx["vrtxID"])
+        formattedVrtcs.append(tpl)
+    return formattedVrtcs
 
-def initializeFromFile(path):
-    try:
-        inpF = open(path, "r")
-        line = inpF.readline()
-    except FileNotFoundError:
-        print("[!] - Error: File not found")
-        return False
-    except:
-        print("[!] - Error: Error while opening file")
-        return False
-        
-    # read until definition of graph starts
-    while not '{' in line:
-        line = inpF.readline()
-
-    # read definition of graph's vertices and edges
-    parseLine = inpF.readline()
-    # print(parseLine)
-    while parseLine != '' and not '}' in parseLine:
-        # check line if it matches the pattern of a comment: '  //...'
-        # (arbitrary number of spaces before '//' and any or none character after)
-        commentLinePattern = re.compile(r"\s*//.*")
-        # handle line content only if it is not a comment
-        if commentLinePattern.search(parseLine) == None:
-            handleInput(parseLine)
-        # read next line
-        parseLine = inpF.readline()
-    inpF.close()
-    return True
+def formatEdges(edges):
+    formattedEdges = []
+    for edge in edges:
+        edgeStr = edge["From"] + "-" + edge["To"]
+        tpl = (edgeStr, edge["Weight"])
+        formattedEdges.append(tpl)
+    return formattedEdges
 
 def isValidInput(vrtcs, edges):
-    if (vrtcs!={} and edges!={}):
+    # example valid vrtcs: {"A": 2, "B": 18, "C", 1}
+    # example valid edges: {"A-B": 2, "B-C": 3, "C-A", 2}
+    if (vrtcs!=[] and edges!=[]):
         # start value is infinty - will be used to compare against
         minVrtxID = float('inf')
         for vrtx in vrtcs:
@@ -206,40 +163,29 @@ SPANNING TREE ALGORITHM
  * a random vertex broadcasts its known root vertex and the pathweight to this root to its neighbors
  * a vertex receiving a broadcast will update its root and pathweight if
     + the incoming root ID is less than the ID of the known root
-    + the weight to root is less than the known weight
+    + the weight to a root it already knows is less than the known weight
  * broadcasting will be terminated once every vertex has broadcasted at least as many times as specified in 'minimumCasts'
  * output will list every vertex with its next hop on its (cheapest) way to root
-    + 'cheapest' only assuming the algorithm has run enough times to determine that
 '''
-input_vertices = []
-input_edges = []
-allVrtcs = {}
-minimumCasts = 5
+def evaluateSpanningTree(input_vertices: list, input_edges: list) -> str:
+    input_vertices = formatVrtcs(input_vertices)
+    input_edges = formatEdges(input_edges)
 
-'''~~~  Specify FILE to read input from HERE  ~~~'''
-# filepath = "test_input.txt"
-filepath = "test_input.txt"
+    allVrtcs = {}
+    minimumCasts = len(input_vertices) * len(input_vertices)
 
+    print("vrtcs:", input_vertices)
+    print("edges:", input_edges)
 
-# ensures the algoritm is run at least once
-if minimumCasts < 1:
-    minimumCasts = 1
+    if isValidInput(vrtcs=input_vertices, edges=input_edges):
+        allVrtcs = createVertices(input_vertices)
+        generateNghbrs(input_edges, allVrtcs)
 
-# print("vrtcs:", input_vertices)
-# print("edges:", input_edges)
+        # as long as any vertex has less broadcasts than specified in minimumCasts
+        while leastBroadcasts(allVrtcs) < minimumCasts:
+            # choose vertex to send broadcast at random
+            rndmVrtx = random.choice(list(allVrtcs))
+            # chosen vertex sends broadcast
+            allVrtcs[rndmVrtx].broadcast()
 
-if initializeFromFile(filepath) and isValidInput(vrtcs=input_vertices, edges=input_edges):
-    allVrtcs = createVertices(input_vertices)
-    generateNghbrs(allVrtcs)
-
-    # as long as any vertex has less broadcasts than specified in minimumCasts
-    while leastBroadcasts(allVrtcs) < minimumCasts:
-        # choose vertex to send broadcast at random
-        rndmVrtx = random.choice(list(allVrtcs))
-        # chosen vertex sends broadcast
-        allVrtcs[rndmVrtx].broadcast()
-
-    output = generateOutput(allVrtcs)
-    printOutputToFile(output)
-
-
+    return outputToString(generateOutput(allVrtcs))
