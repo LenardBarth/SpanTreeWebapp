@@ -110,9 +110,10 @@ def generateOutput(vrtcsDict):
     return hopList
 
 def outputToString(tplList):
-    outputString = ""
+    outputString = []
     for tpl in tplList:
-        outputString = outputString + tpl[0] + " -> " + tpl[1] + "\n"
+        lineStr = tpl[0] + " -> " + tpl[1]
+        outputString.append(lineStr)
     return outputString
 
 def formatVrtcs(vrtcs):
@@ -167,7 +168,7 @@ SPANNING TREE ALGORITHM
  * broadcasting will be terminated once every vertex has broadcasted at least as many times as specified in 'minimumCasts'
  * output will list every vertex with its next hop on its (cheapest) way to root
 '''
-def evaluateSpanningTree(input_vertices: list, input_edges: list) -> str:
+def evaluateSpanningTree(input_vertices: list, input_edges: list) -> list:
     input_vertices = formatVrtcs(input_vertices)
     input_edges = formatEdges(input_edges)
 
