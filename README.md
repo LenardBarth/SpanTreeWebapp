@@ -8,7 +8,7 @@ For any given Vertices and Edges (given some restrictions) the algorithm compute
 The root vertex is that vertex, that has the lowest ID.
 
 ## Restrictions:
-* lowest ID of vertices can only be given once, other IDs can be same as other verties' IDs
+* lowest ID of vertices can only be given once, other IDs can be same as other vertices IDs
 * edge can not go from vertex to same vertex
 * no edge can be defined twice
 
