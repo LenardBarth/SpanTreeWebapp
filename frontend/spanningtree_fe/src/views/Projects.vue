@@ -32,6 +32,8 @@ import axios from 'axios'
 
 export default {
     name: "AllProjects",
+    // this lifecycle hook is called as Vue creates this component
+    // this way the data will be available as the component reenders
     beforeCreate() {
         axios.get(`getUserTrees/${parseInt(localStorage.getItem('user_id'))}`).then( response => {
             if (response.status === 200) {
@@ -47,6 +49,7 @@ export default {
         }
     },
     methods: {
+        // given the project this stores project data locally and redirects
         openProject(project) {
             localStorage.setItem('vrtxList', project.vertices)
             localStorage.setItem('edgeList', project.edges)

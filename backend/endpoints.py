@@ -21,6 +21,7 @@ endpoints = Blueprint('endpoints', __name__)
 
 
 # -- Defining routes --
+# API for Spanning Tree Algorithm
 @endpoints.route('/computeTree', methods=["POST"])
 def computeTree():
     if request.method == 'POST':
@@ -30,6 +31,7 @@ def computeTree():
         vrtcs = post_data.get('vrtcs')
         edges = post_data.get('edges')
 
+        # make sure there is data to run algorithm with
         if vrtcs == []:
             response_object = {"status": "warning"}
             response_object['message'] = "Please create vertices first."
@@ -38,10 +40,9 @@ def computeTree():
             response_object['message'] = "Please create edges."
         else:
             try:
+                # let algorithm compute on given spanning tree and return results to frontend
                 tree_result = evaluateSpanningTree(input_vertices=vrtcs, input_edges=edges)
                 response_object['result'] = tree_result
-                print(type(tree_result))
-                print(tree_result)
                 response_object['message'] = "Algorithm cpmleted successfully"
             except:
                 response_object = {"status": "danger"}
@@ -51,18 +52,21 @@ def computeTree():
 
 # Protected route for Users requesting all of his saved Spanning Tree projects
 @endpoints.route('/getUserTrees/<userID>', methods=["GET"])
-# @login_required
+# @login_required   # throws inexplicable error so don't use this decorator
 def getUserTrees(userID):
     if request.method == 'GET':
         response_object = {"status": "success"}
         user = User.query.filter_by(id=userID).first()
+        # make sure user with given ID exists
         if user:
+            # get all trees associated with this user
             trees = SpanningTree.query.filter_by(user_id=user.id).all()
+            # make sure there are already existing projects
             if trees:
+                # turn list of DB objects into list of JSON objects so frontend can handle them
                 projects = []
                 for tree in trees:
                     projects.append({"id": tree.id, "name": tree.name, "vertices": tree.vertices, "edges": tree.edges, "result": tree.result, "user_id": tree.user_id})
-                print(projects)
                 response_object['projects'] = projects
 
     return response_object
@@ -82,6 +86,7 @@ def save_spanTree():
         edgesStr = post_data.get('edges')
         resultStr = post_data.get('result')
 
+        # ensure that there is data being sent
         if vrtcsStr == "":
             response_object = {"status": "warning"}
             response_object['message'] = "Please create vertices first."

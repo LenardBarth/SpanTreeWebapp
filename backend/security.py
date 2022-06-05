@@ -17,13 +17,17 @@ from werkzeug.security import generate_password_hash, check_password_hash
    license: free
 """
 
-
+# Blueprints are used to group certain routes - mostly thematically similar - together
 security = Blueprint('security', __name__)
 
+# Route where existing users log in to session
 @security.route('/login', methods=['POST'])
 def login():
     if request.method == 'POST':
+        # init response as status success - will change if errors occur
         response_object = {"status": "success"}
+
+        # process data from request body
         post_data = request.get_json()
         rEmail = post_data.get('email')
         rPassword = post_data.get('password')
@@ -31,19 +35,22 @@ def login():
         # check if user wit given email exists and correct password was entered
         user = User.query.filter_by(email=rEmail).first()
         if user and check_password_hash(user.password, rPassword):
+            # check if this user account is not already logged in
             if user.authenticated == False:
                 try: 
                     user.authenticated = True
-                    login_user(user, remember=True)
+                    login_user(user, remember=True)     # from flask_login
                     response_object['message'] = "Logged in successfully!"
                     response_object['user_id'] = user.id
                 except:
                     response_object["status"] = "warning"
                     response_object['message'] = "Could not log in!"
                     user.authenticated = False
+            # account logged in already
             else:
                 response_object["status"] = "warning"
                 response_object['message'] = "Already logged in."
+        # no user with given ID was found
         else:
             response_object["status"] = "warning"
             response_object['message'] = "Login data incorrect."
@@ -79,24 +86,18 @@ def createUser():
                 
     return response_object
 
-@security.route('/renew', methods=['GET'])
-def renewToken():
-    response_object = {"status": "info"}
-    response_object['message'] = "Would have renewed token"
-    return response_object
-
 @security.route('/logout', methods=['POST'])
 # @login_required
 def logout():
-    print("logging out")
     response_object = {"status": "info"}
     if request.method == 'POST':
         post_data = request.get_json()
         user_id = post_data.get('user_id')
         try:
+            # get user that is trying to log out
             user = User.query.filter_by(id=user_id).first()
             user.authenticated = False
-            logout_user()
+            logout_user()   # from flask_login
             response_object['logged_in'] = user.authenticated
             response_object['message'] = "Logged out"
         except:

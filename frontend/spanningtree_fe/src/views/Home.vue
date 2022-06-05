@@ -40,20 +40,25 @@ export default {
         }
     },
     methods: {
+        // passes a updated list from one component to another as they cannot detect updates in localStorage
         passListChanged() {
             this.changedList = JSON.parse(localStorage.getItem('vrtxList'))
         },
+        // sends Spanning Tree data to backend to be processed and receives result lsit in return (in case of error result will be empty)
         async sendTree() {
+            // create data to be sent
             let payload = {
                 'vrtcs': JSON.parse(localStorage.getItem('vrtxList')),
                 'edges': JSON.parse(localStorage.getItem('edgeList'))
             }
+            //send request to backend using axios
             const response = await axios.post('computeTree', payload).catch(err => {
                 console.log(err)
                 this.$emit('infoPopup', {status: "danger", msg: "Server error"})
             })
+            // if request wass successful
             if (response && response.status === 200) {
-                console.log("response:", response);
+                // if backend did not throw any errors
                 if (response.data.status === 'success') {
                     localStorage.setItem('result', JSON.stringify(response.data.result))
                     this.$router.push({ name: 'Result'})
@@ -63,9 +68,13 @@ export default {
                 this.$emit('infoPopup', {status: "danger", msg: "Could not reach Server"})
             }
         },
+        // sends request to save data of Spanning Tree project user is currently working on
         async saveTree() {
+            // make sure user is logged in, in order to save
             if (localStorage.getItem('logged_in')==="True"){
+                // make sure project is not nameless
                 if (this.project_name!==""){
+                    // create data to be sent
                     let payload = {
                         'tree_id': localStorage.getItem('tree_id'),
                         'user_id': localStorage.getItem('user_id'),
@@ -78,18 +87,21 @@ export default {
                         console.log(err)
                         this.$emit('infoPopup', {status: "danger", msg: "Server error while trying to save"})
                     })
+                    // if request wass successful
                     if (response && response.status === 200) {
-                        console.log("response:", response)
+                        // if backend did not throw any errors
                         if (response.data.status === 'success') {
                             localStorage.setItem('tree_id', response.data.tree_id)
                         }
                         this.$emit('infoPopup', {status: response.data.status, msg: response.data.message})
                     } else {
                         this.$emit('infoPopup', {status: "danger", msg: "Could not be saved"})
-                        }
+                    }
+                // if project is nameless
                 } else {
                     this.$emit('infoPopup', {status: "info", msg: "You should give your project a name first"})
                 }
+            // if user is not logged in
             } else {
                 this.$emit('infoPopup', {status: "info", msg: "You must be logged in to save"})
             }

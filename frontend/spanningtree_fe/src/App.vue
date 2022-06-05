@@ -23,7 +23,9 @@ export default {
     }
   },
   methods: {
+    // handles emmted events to be displayed as userInfoPopup
     handleInfo(_info) {
+      // push info object to 'queue'
       this.infoStack.push(_info)
     }
   }

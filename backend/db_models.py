@@ -4,15 +4,16 @@ from datetime import datetime
 from sqlalchemy import ForeignKey, func
 from flask_login import UserMixin
 
+# database class (table) to store and load projects of spanning trees
 class SpanningTree(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128))
     vertices = db.Column(db.Text)
     edges =  db.Column(db.Text)
     result =  db.Column(db.Text)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))   # used to represent ONE to MANY relation (one user can have many trees; one tree can only belong to one user)
 
-
+# database class (table) to store user accounts
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(128), unique=True)

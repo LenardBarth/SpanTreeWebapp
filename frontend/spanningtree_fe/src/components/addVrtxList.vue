@@ -59,13 +59,17 @@ export default {
     },
     methods: {
         addVrtx(){
+            // since form never gets submitted 'required' attribute on input does not work
+            // therefore check if input is complete via if(..)
             if (!isNaN(this.vrtxID) && this.vrtxName !== "") {
                 var inputVrtxID = this.vrtxID
                 var inputVrtxName = this.vrtxName.trim()
+                // vertex with specified data is pushed to component-internal list of all vertices
                 this.vrtxList.push({ 
                     vrtxID: inputVrtxID,
                     vrtxName: inputVrtxName
                 })
+                // update list of all vertices with newly added vertex (stored in browser localStorage)
                 localStorage.setItem('vrtxList', JSON.stringify(this.vrtxList))
                 this.clearAll()
                 this.$emit('changeVrtxList')
@@ -73,19 +77,16 @@ export default {
                 this.$emit('infoPopup', {status: "info", msg: "Please enter ID and Name"})
             }
         },
+        // resets all inputs to empty
         clearAll() {
             this.vrtxID = parseInt(this.vrtxID) + 1
         this.vrtxName = ''
         },
+        // removes vertex from list of all vertices
         removeVrtx(index){
             this.vrtxList.splice(index, 1)  //delete 1 element from the array at the position index
             localStorage.setItem('vrtxList', JSON.stringify(this.vrtxList))
             this.$emit('changeVrtxList')
-        },
-        // Gets data from backend
-        async getAllTrees() {
-            const response = await axios.get(`/getUserTrees/${localStorage.getItem('user_id')}`)
-            console.log("response: ", response)
         }
     }
 }

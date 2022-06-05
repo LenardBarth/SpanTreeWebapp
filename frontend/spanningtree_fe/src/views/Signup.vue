@@ -35,36 +35,39 @@ export default {
     }
   },
   methods: {
+    // checks if entered data is passable
     handleSubmit() {
-        if (this.password===this.password_repeat) {
-            this.sendSignUp()
-        } else {
-            this.$emit('infoPopup', {status: "warning", msg: "Passwords did not match. Please try again!"})
-            this.password = ''
-            this.password_repeat = ''
-        }
+      // only continue if passwords match
+      if (this.password===this.password_repeat) {
+          this.sendSignUp()
+      } else {
+          this.$emit('infoPopup', {status: "warning", msg: "Passwords did not match. Please try again!"})
+          this.password = ''
+          this.password_repeat = ''
+      }
     },
+    // sneds signup request to backend to create new user with given data
     async sendSignUp() {
-        const response = await axios.post('auth/createUser', {
-            "email": this.email,
-            "first_name": this.first_name,
-            "last_name": this.last_name,
-            "password": this.password,
-            "password_repeat": this.password_repeat
-        }).catch(err => {
-            console.log(err)
-            this.$emit('infoPopup', {status: "danger", msg: "Signup error"})
-        })
-        if (response && response.status === 200) {
-            console.log("response:", response);
-            console.log("response success data: ", response.data);
+      const response = await axios.post('auth/createUser', {
+          "email": this.email,
+          "first_name": this.first_name,
+          "last_name": this.last_name,
+          "password": this.password,
+          "password_repeat": this.password_repeat
+      }).catch(err => {
+          console.log(err)
+          this.$emit('infoPopup', {status: "danger", msg: "Signup error"})
+      })
+      // if request wass successful
+      if (response && response.status === 200) {
+        // if backend did not throw any errors
         if (response.data.status === 'success') {
           this.$router.push({ name: 'Home'})
         }
         this.$emit('infoPopup', {status: response.data.status, msg: response.data.message})
-        } else {
-            this.$emit('infoPopup', {status: "danger", msg: "Something went wrong..."})
-        }
+      } else {
+          this.$emit('infoPopup', {status: "danger", msg: "Something went wrong..."})
+      }
     }
   }
 }

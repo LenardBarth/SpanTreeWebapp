@@ -29,13 +29,14 @@ export default {
       }
   },
   methods: {
+    // send logout request to backend
     async logout() {
       const response = await axios.post("auth/logout", {'user_id': parseInt(localStorage.getItem('userid'))}).catch(err => {
         console.log("error: ", err);
       })
       if (response && response.status === 200) {
         localStorage.clear()
-        this.$router.push({ name: 'Login'})
+        this.$router.push({ name: 'Login'}) // redirect to login page
         this.$emit('infoPopup', {status: response.data.status, msg: response.data.message})
       } else {
         this.$emit('infoPopup', {status: response.data.status, msg: response.data.message})

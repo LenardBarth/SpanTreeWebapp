@@ -24,6 +24,7 @@ export default {
     }
   },
   methods: {
+    // request to tell backend user wants to log in with given credentials
     async handleSubmit() {
       const response = await axios.post('auth/login', {
         "email": this.email,
@@ -32,8 +33,9 @@ export default {
         console.log(err)
         this.$emit('infoPopup', {status: "danger", msg: "Login error"})
       })
+      // if request wass successful
       if (response && response.status === 200) {
-        console.log("response:", response);
+        // if backend did not throw any errors
         if (response.data.status === 'success') {
           localStorage.setItem('user_id', response.data.user_id)
           localStorage.setItem('logged_in', "True")

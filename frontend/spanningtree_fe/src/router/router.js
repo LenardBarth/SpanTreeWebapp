@@ -5,6 +5,8 @@ import Register from "@/views/Signup";
 import Result from "@/views/Result";
 import Projects from "@/views/Projects";
 
+// Defines rotes at which certain components are rendered
+// works via <router-view> which will be replaced by component at each route respectfully
 const routes = [
   {
     path: "/",

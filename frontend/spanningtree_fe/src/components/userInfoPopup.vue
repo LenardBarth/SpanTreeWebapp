@@ -27,6 +27,7 @@ export default {
   name: "userInfoPopup",
   props: ['info'],
   created() {
+    // every time this component is created sets timer to hide component after
       this.customTimeout()
   },
   data() {
@@ -36,6 +37,7 @@ export default {
       }
   },
   methods: {
+      // after 2.45 seconds this component will not be displayed anymore
       customTimeout() {
         this.showInfo = true
         setTimeout(() => {

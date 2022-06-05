@@ -62,11 +62,11 @@ export default {
     emits: ['infoPopup'],
     props: ['newVrtxList'],
     watch: {
+        // will be run every time the vrtxList changes
+        // used to update optioins of select tags to select vertices for edge
         newVrtxList() {
             this.vrtxList = localStorage.getItem('vrtxList')===null ? [] : JSON.parse(localStorage.getItem('vrtxList'))
         }
-    },
-    created() {
     },
     data() {
         return {
@@ -79,26 +79,32 @@ export default {
     },
     methods: {
         addEdge(){
-            if (this.From.valueOf()!=="" && this.From.valueOf()!=="" && !isNaN(this.Weight)) {
+            // since form never gets submitted 'required' attribute on input does not work
+            // therefore check if input is complete via if(..)
+            if (this.From.valueOf()!=="" && this.To.valueOf()!=="" && !isNaN(this.Weight)) {
                 const inputFrom = this.From.valueOf()
                 const inputTo = this.To.valueOf()
                 const inputWeight = this.Weight
+                // edge with specified data is pushed to component-internal list of all edges
                 this.edgeList.push({ 
                     From: inputFrom,
                     To: inputTo,
                     Weight: inputWeight
                 })
+                // update list of all edges with newly added edge (stored in browser localStorage)
                 localStorage.setItem('edgeList', JSON.stringify(this.edgeList))
                 this.clearAll()
             } else {
                 this.$emit('infoPopup', {status: "info", msg: "Please fill in both vertices and the corresponding wheight"})
             }
         },
+        // resets all inputs to empty
         clearAll() {
             this.From = ''
             this.To = ''
             this.Weight = ''
         },
+        // removes edge from list of all edges
         removeEdge(index){
             this.edgeList.splice(index, 1)  //delete 1 element from the array at the position index
             localStorage.setItem('edgeList', JSON.stringify(this.edgeList))
