@@ -35,13 +35,9 @@ export default {
       if (response && response.status === 200) {
         console.log("response:", response);
         if (response.data.status === 'success') {
-          localStorage.setItem('user_id', toString(response.data.user_id))
+          localStorage.setItem('user_id', response.data.user_id)
           localStorage.setItem('logged_in', "True")
-          localStorage.setItem('vrtxList', "")
-          localStorage.setItem('edgeList', "")
-          localStorage.setItem('result', "")
-          localStorage.setItem('treeID', "")
-          this.$router.push({ name: 'Home'})
+          this.$router.push({ name: 'Projects'})
         }
         this.$emit('infoPopup', {status: response.data.status, msg: response.data.message})
       } else {

@@ -7,7 +7,7 @@
             <div class="row justify-content-around">
                 <div class="col col-4 form-group ">
                     <label class="w-100" for="vrtxID">ID</label>
-                    <input type="number" v-model="vrtxID" autofocus>
+                    <input type="number" v-model="vrtxID" min="1">
                 </div>
                 <div class="col col-4 form-group">
                     <label class="w-100" for="vrtxName">Name</label>
@@ -49,9 +49,6 @@ export default {
     name: "addVrtxList",
     emits: ['infoPopup', 'changeVrtxList'],
     created() {
-        if (localStorage.getItem('logged_in') === "True") {
-            this.getAllTrees()
-        }
     },
     data() {
         return {

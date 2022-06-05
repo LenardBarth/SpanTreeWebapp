@@ -228,21 +228,21 @@ def generateOutput(vrtcsDict):
 """Description: 
     * For a list of tuples containing vrtx name and name of next hop returns list of tuples stringified
 Args:
-    * List of Tuples - exapmle see Test
+    * List of Tuples - exapmle [("A", "B"), ("B", "C"), ("C", "Root"), ("D", "C")]
 Return:
-    * list of strings for each vertex
+    * dict of strings for each vertex with key being index
     * each string contains vertx name and name of "next hop" vertex
     * if there is no next hop contains "Root"
 Test: 
     * tplList = [("A", "B"), ("B", "C"), ("C", "Root"), ("D", "C")]
-    --> ["A -> B", "B -> C", "C -> Root", "D -> C"]
+    --> {1: "A -> B", 2: "B -> C", 3: "C -> Root", 4: "D -> C"}
 """
-def outputToString(tplList):
-    outputString = []
-    for tpl in tplList:
-        lineStr = tpl[0] + " -> " + tpl[1]
-        outputString.append(lineStr)
-    return outputString
+def outputToDict(tplList):
+    outputDict = {}
+    for i in range(len(tplList)):
+        lineStr = tplList[i][0] + " -> " + tplList[i][1]
+        outputDict[i] = lineStr
+    return outputDict
 
 """Description: 
     * Because input comes from JSON needs to be formatted to be processed further
@@ -311,7 +311,6 @@ def isValidInput(vrtcs, edges):
             elif vrtx[1] == minVrtxID:
                 print("[!] - Error: Root ID exists twice")
                 return False
-        # 
         for edge in edges:
             for otherEdge in edges:
                 # check if edge was defined twice in inverse direction (A-B and B-A)
@@ -369,4 +368,4 @@ def evaluateSpanningTree(input_vertices: list, input_edges: list) -> list:
             # chosen vertex sends broadcast
             allVrtcs[rndmVrtx].broadcast()
 
-    return outputToString(generateOutput(allVrtcs))
+    return outputToDict(generateOutput(allVrtcs))

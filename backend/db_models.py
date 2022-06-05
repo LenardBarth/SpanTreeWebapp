@@ -11,7 +11,6 @@ class SpanningTree(db.Model):
     edges =  db.Column(db.Text)
     result =  db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    last_modified = db.Column(db.DateTime(timezone=True), onupdate=func.now())
 
 
 class User(db.Model, UserMixin):
@@ -28,8 +27,8 @@ class User(db.Model, UserMixin):
         return True
 
     def get_id(self):
-        # Return the email address to satisfy Flask-Login's requirements
-        return self.id
+        # Return users ID as string to satisfy Flask-Login's requirements
+        return str(self.id)
 
     def is_authenticated(self):
         # Return True if the user is authenticated

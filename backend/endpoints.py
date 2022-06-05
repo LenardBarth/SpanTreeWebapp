@@ -23,71 +23,91 @@ endpoints = Blueprint('endpoints', __name__)
 # -- Defining routes --
 @endpoints.route('/computeTree', methods=["POST"])
 def computeTree():
-    response_object = {"status": "success"}
     if request.method == 'POST':
+        response_object = {"status": "success"}
         post_data = request.get_json()
         
         vrtcs = post_data.get('vrtcs')
         edges = post_data.get('edges')
 
-        try:
-            tree_result = evaluateSpanningTree(input_vertices=vrtcs, input_edges=edges)
-            response_object['result'] = tree_result
-        except:
-            response_object = {"status": "danger"}
-            response_object['message'] = "Could not compute ideal Spanning Tree"
-
+        if vrtcs == []:
+            response_object = {"status": "warning"}
+            response_object['message'] = "Please create vertices first."
+        elif edges == []:
+            response_object = {"status": "warning"}
+            response_object['message'] = "Please create edges."
+        else:
+            try:
+                tree_result = evaluateSpanningTree(input_vertices=vrtcs, input_edges=edges)
+                response_object['result'] = tree_result
+                print(type(tree_result))
+                print(tree_result)
+                response_object['message'] = "Algorithm cpmleted successfully"
+            except:
+                response_object = {"status": "danger"}
+                response_object['message'] = "Could not compute ideal Spanning Tree"
 
     return response_object
 
-# Protected routes for Users that save Spanning Tree to database
-@endpoints.route('/getUserTrees/<user_id>', methods=["GET"])
-@login_required
-def getUserTrees(user_id):
-    response_object = {"status": "success"}
+# Protected route for Users requesting all of his saved Spanning Tree projects
+@endpoints.route('/getUserTrees/<userID>', methods=["GET"])
+# @login_required
+def getUserTrees(userID):
     if request.method == 'GET':
-        user = User.query.filter_by(id=user_id).first()
+        response_object = {"status": "success"}
+        user = User.query.filter_by(id=userID).first()
         if user:
-            trees = SpanningTree.query.filter(user_id=current_user.id).all()
+            trees = SpanningTree.query.filter_by(user_id=user.id).all()
             if trees:
-                print(trees)
+                projects = []
+                for tree in trees:
+                    projects.append({"id": tree.id, "name": tree.name, "vertices": tree.vertices, "edges": tree.edges, "result": tree.result, "user_id": tree.user_id})
+                print(projects)
+                response_object['projects'] = projects
+
     return response_object
 
-@endpoints.route('/getSpanningTree/<tree_id>', methods=["GET"])
-@login_required
-def getSpanningTree(tree_id):
-    response_object = {"status": "success"}
-    if request.method == 'GET':
-        tree = SpanningTree.query.filter_by(id=tree_id).first()
-        if tree:
-            print(tree)
-    return response_object
-
+# Protected route for Users saving a Spanning Tree project
 @endpoints.route('/save', methods=["POST"])
-@login_required
+# @login_required
 def save_spanTree():
-    response_object = {"status": "success"}
     if request.method == 'POST':
+        response_object = {"status": "success"}
         post_data = request.get_json()
 
         treeID = post_data.get('tree_id')
+        userID = post_data.get('user_id')
+        nameStr = post_data.get('name')
         vrtcsStr = post_data.get('vrtcs')
         edgesStr = post_data.get('edges')
         resultStr = post_data.get('result')
 
-        try:
-            tree = SpanningTree.query.filter_by(id=treeID).first()
-            if tree:
-                tree.vrtcs=vrtcsStr
-                tree.edges=edgesStr
-                tree.result=resultStr
-            else:
-                newTree = SpanningTree(user_id=current_user, vrtcs=vrtcsStr, edges=edgesStr, result=resultStr)
-                db.session.add(newTree)
-            db.session.commit()
-            response_object['message'] = "Saved!"
-        except:
+        if vrtcsStr == "":
             response_object = {"status": "warning"}
-            response_object['message'] = "Could not save Spanning Tree"
+            response_object['message'] = "Please create vertices first."
+        elif edgesStr == "":
+            response_object = {"status": "warning"}
+            response_object['message'] = "Please create edges."
+        else:
+            try:
+                # check if treeID is taken, if so update existing tree with new data
+                tree = SpanningTree.query.filter_by(id=treeID).first()
+                if tree:
+                    tree.vrtcs=vrtcsStr
+                    tree.edges=edgesStr
+                    tree.result=resultStr
+                    response_object['message'] = "Updated!"
+                    response_object['tree_id'] = tree.id
+                # if treeID does not exist, create new tree
+                else:
+                    user = User.query.filter_by(id=userID).first()
+                    newTree = SpanningTree(user_id=user.id, name=nameStr, vertices=vrtcsStr, edges=edgesStr, result=resultStr)
+                    db.session.add(newTree)
+                    response_object['message'] = "Saved new Spanning Tree project!"
+                    response_object['tree_id'] = newTree.id
+                db.session.commit()
+            except:
+                response_object = {"status": "danger"}
+                response_object['message'] = "Could not save Spanning Tree"
 
     return response_object

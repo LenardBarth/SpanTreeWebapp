@@ -5,16 +5,20 @@
         <thead class="table-dark">
             <tr>
                 <th scope="col">Name</th>
-                <th scope="col">last modified</th>
+                <th scope="col"># of Vertices</th>
+                <th scope="col"># of Edges</th>
             </tr>
         </thead>
         <tbody>
-            <tr v-for="(project, index) in projectList" :key="index" @click="openProject(project)">
+            <tr v-for="(project, index) in projectsList" :key="index" @click="openProject(project)">
                 <td>
                     <span>{{ project.name }}</span>
                 </td>
                 <td>
-                    <span>{{ project.last_modified }}</span>
+                    <span>{{ JSON.parse(project.vertices).length }}</span>
+                </td>
+                <td>
+                    <span>{{ JSON.parse(project.edges).length }}</span>
                 </td>
             </tr>
         </tbody>
@@ -28,7 +32,7 @@ import axios from 'axios'
 
 export default {
     name: "AllProjects",
-    created() {
+    beforeCreate() {
         axios.get(`getUserTrees/${parseInt(localStorage.getItem('user_id'))}`).then( response => {
             if (response.status === 200) {
                 this.projectsList = response.data.projects
@@ -43,8 +47,13 @@ export default {
         }
     },
     methods: {
-        openProject() {
-
+        openProject(project) {
+            localStorage.setItem('vrtxList', project.vertices)
+            localStorage.setItem('edgeList', project.edges)
+            localStorage.setItem('result', project.result)
+            localStorage.setItem('tree_id', project.id)
+            localStorage.setItem('project_name', project.name)
+            this.$router.push({ name: 'Home' })
         }
     },
 }
@@ -61,4 +70,8 @@ h2 {
   vertical-align: middle;
 }
 
+tr {
+    padding: 10px 0;
+    font-size: larger;
+}
 </style>

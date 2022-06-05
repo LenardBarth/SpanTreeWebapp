@@ -32,10 +32,15 @@ def login():
         user = User.query.filter_by(email=rEmail).first()
         if user and check_password_hash(user.password, rPassword):
             if user.authenticated == False:
-                user.authenticated = True
-                login_user(user, remember=True)
-                response_object['message'] = "Logged in successfully!"
-                response_object['user_id'] = user.id
+                try: 
+                    user.authenticated = True
+                    login_user(user, remember=True)
+                    response_object['message'] = "Logged in successfully!"
+                    response_object['user_id'] = user.id
+                except:
+                    response_object["status"] = "warning"
+                    response_object['message'] = "Could not log in!"
+                    user.authenticated = False
             else:
                 response_object["status"] = "warning"
                 response_object['message'] = "Already logged in."
@@ -76,20 +81,26 @@ def createUser():
 
 @security.route('/renew', methods=['GET'])
 def renewToken():
-    response_object = {"status": "success"}
     response_object = {"status": "info"}
     response_object['message'] = "Would have renewed token"
     return response_object
 
-@security.route('/logout', methods=['GET'])
-@login_required
+@security.route('/logout', methods=['POST'])
+# @login_required
 def logout():
+    print("logging out")
     response_object = {"status": "info"}
-    try:
-        current_user.authenticated = False
-        logout_user()
-        response_object['message'] = "Logged out"
-    except:
-        response_object = {"status": "danger"}
-        response_object['message'] = "Could not log out"
+    if request.method == 'POST':
+        post_data = request.get_json()
+        user_id = post_data.get('user_id')
+        try:
+            user = User.query.filter_by(id=user_id).first()
+            user.authenticated = False
+            logout_user()
+            response_object['logged_in'] = user.authenticated
+            response_object['message'] = "Logged out"
+        except:
+            response_object = {"status": "danger"}
+            response_object['message'] = "Could not log out"
+    
     return response_object

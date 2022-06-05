@@ -21,7 +21,7 @@
                 </div>
                 <div class="col col-4 form-group">
                     <label class="w-100" for="Weight">Weight</label>
-                    <input type="number" v-model="Weight">
+                    <input type="number" v-model="Weight" min="1">
                 </div>
             </div>
             <button type="submit" @click="addEdge" class="btn btn-primary" ><i class="fa fa-plus"></i>Add</button>
@@ -67,9 +67,6 @@ export default {
         }
     },
     created() {
-        if (localStorage.getItem('logged_in') === "True") {
-            this.getAllTrees()
-        }
     },
     data() {
         return {

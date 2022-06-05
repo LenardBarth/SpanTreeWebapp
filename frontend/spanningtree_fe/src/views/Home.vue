@@ -8,6 +8,10 @@
     </div>
 </div>
 <div class="wrapper">
+    <div class="form-group">
+        <label for="project_name">Name of project</label><br>
+        <input type="text" name="project_name" id="project_name" v-model="project_name" :placeholder="project_name===''?'Choose Name':project_name">
+    </div>
     <div class="btn-wrapper">
         <button class="btn btn-outline-primary btn-lg" @click="saveTree()">Save</button>
     </div>
@@ -31,7 +35,8 @@ export default {
     },
     data() {
         return {
-            changedList: []
+            changedList: [],
+            project_name: localStorage.getItem('project_name')
         }
     },
     methods: {
@@ -50,8 +55,8 @@ export default {
             if (response && response.status === 200) {
                 console.log("response:", response);
                 if (response.data.status === 'success') {
-                    localStorage.setItem('result', toString(response.data.result))
-                    // this.$router.push({ name: 'Result'})
+                    localStorage.setItem('result', JSON.stringify(response.data.result))
+                    this.$router.push({ name: 'Result'})
                 }
                 this.$emit('infoPopup', {status: response.data.status, msg: response.data.message})
             } else {
@@ -60,22 +65,31 @@ export default {
         },
         async saveTree() {
             if (localStorage.getItem('logged_in')==="True"){
-                let payload = {
-                    'tree_id': parseInt(localStorage.getItem('treeID')),
-                    'vrtcs': localStorage.getItem('vrtxList'),
-                    'edges': localStorage.getItem('edgeList'),
-                    'result': localStorage.getItem('result')
-                }
-                const response = await axios.post('computeTree', payload).catch(err => {
-                    console.log(err)
-                    this.$emit('infoPopup', {status: "danger", msg: "Server error while trying to save"})
-                })
-                if (response && response.status === 200) {
-                    console.log("response:", response)
-                    this.$emit('infoPopup', {status: response.data.status, msg: response.data.message})
-                } else {
-                    this.$emit('infoPopup', {status: "danger", msg: "Could not be saved"})
+                if (this.project_name!==""){
+                    let payload = {
+                        'tree_id': localStorage.getItem('tree_id'),
+                        'user_id': localStorage.getItem('user_id'),
+                        'name': this.project_name,
+                        'vrtcs': localStorage.getItem('vrtxList'),
+                        'edges': localStorage.getItem('edgeList'),
+                        'result': localStorage.getItem('result'),
                     }
+                    const response = await axios.post('save', payload).catch(err => {
+                        console.log(err)
+                        this.$emit('infoPopup', {status: "danger", msg: "Server error while trying to save"})
+                    })
+                    if (response && response.status === 200) {
+                        console.log("response:", response)
+                        if (response.data.status === 'success') {
+                            localStorage.setItem('tree_id', response.data.tree_id)
+                        }
+                        this.$emit('infoPopup', {status: response.data.status, msg: response.data.message})
+                    } else {
+                        this.$emit('infoPopup', {status: "danger", msg: "Could not be saved"})
+                        }
+                } else {
+                    this.$emit('infoPopup', {status: "info", msg: "You should give your project a name first"})
+                }
             } else {
                 this.$emit('infoPopup', {status: "info", msg: "You must be logged in to save"})
             }
