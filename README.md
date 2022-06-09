@@ -25,8 +25,8 @@ After creating a Spanning Tree, it can be saved to a database and the user can l
 * Start Frontend Server on localhost:8080
   * inside frontend/spanningtree-fe run `npm run serve`
 * Start Backend Server on localhost:5000
-  * inside the project folder set up a virtual environment: `>> python -m venv Venv`
-  * after the virtual env called Venv is creeated activate it via `>> Venv\Scripts\activate` 
+  * inside the project folder set up a virtual environment: `python -m venv Venv`
+  * after the virtual env called Venv is creeated activate it via `Venv\Scripts\activate` 
   * install required packages inside the venv
     * `pip install flask`
     * `pip install flask-login`
