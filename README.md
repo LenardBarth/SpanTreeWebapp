@@ -32,4 +32,4 @@ After creating a Spanning Tree, it can be saved to a database and the user can l
     * `pip install flask-login`
     * `pip install flask_cors`
     * `pip install flask-sqlalchemy`
-  * Run the server using by running the main file `python main.py`
+  * Run the server by running the main file `python main.py`
