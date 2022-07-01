@@ -43,8 +43,6 @@
 
 
 <script>
-import axios from 'axios'
-
 export default {
     name: "addVrtxList",
     emits: ['infoPopup', 'changeVrtxList'],
